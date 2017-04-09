@@ -99,6 +99,7 @@ static void *ktp_worker(void *data)
 			}
 			if (i == p->n_workers) break; // no workers with smaller indices are doing w->step or the previous steps
 			pthread_cond_wait(&p->cv, &p->mutex);
+                        // fprintf(stderr,"RRN: HACK: skipping pthread_cond_wait...\n");
 		}
 		pthread_mutex_unlock(&p->mutex);
 

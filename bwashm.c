@@ -86,6 +86,8 @@ int bwa_shm_stage(bwaidx_t *idx, const char *hint, const char *_tmpfn)
 
 bwaidx_t *bwa_idx_load_from_shm(const char *hint)
 {
+  return NULL; // RRN: Hacking this to remove need for /dev/shm access.
+  
 	const char *name;
 	uint8_t *shm, *shm_idx;
 	uint16_t *cnt, i;

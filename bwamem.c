@@ -1186,7 +1186,14 @@ void mem_process_seqs(const mem_opt_t *opt, const bwt_t *bwt, const bntseq_t *bn
 	w.aux = malloc(opt->n_threads * sizeof(smem_aux_t));
 	for (i = 0; i < opt->n_threads; ++i)
 		w.aux[i] = smem_aux_init();
-	kt_for(opt->n_threads, worker1, &w, (opt->flag&MEM_F_PE)? n>>1 : n); // find mapping positions
+
+        fprintf(stderr,"RRN: First kt_for site...\n");
+        kt_for(opt->n_threads, worker1, &w, (opt->flag&MEM_F_PE)? n>>1 : n); // find mapping positions
+        /* for (i = 0; i < (opt->flag&MEM_F_PE)? n>>1 : n; i++) { */
+        /*   fprintf(stderr,"  Calling worker1(%d)\n", i); */
+        /*   worker1((void*)&w, i, pthread_self()); */
+        /* } */
+        
 	for (i = 0; i < opt->n_threads; ++i)
 		smem_aux_destroy(w.aux[i]);
 	free(w.aux);
@@ -1194,7 +1201,10 @@ void mem_process_seqs(const mem_opt_t *opt, const bwt_t *bwt, const bntseq_t *bn
 		if (pes0) memcpy(pes, pes0, 4 * sizeof(mem_pestat_t)); // if pes0 != NULL, set the insert-size distribution as pes0
 		else mem_pestat(opt, bns->l_pac, n, w.regs, pes); // otherwise, infer the insert size distribution from data
 	}
+
+        fprintf(stderr,"RRN: Second kt_for site...\n");        
 	kt_for(opt->n_threads, worker2, &w, (opt->flag&MEM_F_PE)? n>>1 : n); // generate alignment
+        
 	free(w.regs);
 	if (bwa_verbose >= 3)
 		fprintf(stderr, "[M::%s] Processed %d reads in %.3f CPU sec, %.3f real sec\n", __func__, n, cputime() - ctime, realtime() - rtime);
